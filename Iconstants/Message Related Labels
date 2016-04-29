@@ -1,0 +1,15 @@
+@Author: Pradeep
+Cando
+
+#Messages Related Labels
+new.LABEL=New
+trash.LABEL=Trash
+sent.LABEL=Sent
+inbox.LABEL=Inbox
+options.LABEL=Options
+notificationsCount.MESSAGE=You have {0} new notifications.
+inboxMessagesCount.MESSAGE=You have {0} messages.
+noNotifications.MESSAGE=You do not have any notifications.
+noInboxMessages.MESSAGE=You do not have any messages.
+seeAllNotifications.MESSAGE=See all notifications.
+seeAllInboxMessages.MESSAGE=Show Inbox.

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+		<style>
+			span.icon {
+				margin-right: 1.5cm;
+			}
+		</style>
+		<th:block th:replace="fragments/layout::fragmentCSSCommon"/>
+	</head>
+	<body>
+		<div class="body-main">
+			<div class="body-header">
+				<div th:replace="fragments/layout::fragmentHeader"></div>
+				<div th:replace="fragments/menubar::fragmentMenuBar"></div>
+			</div>
+			<div class="row" style="padding-bottom: 0px">
+				<div class="col-md-offset-3 col-md-7 ">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-md-3" style="padding-left: 0px; padding-right: 0px">
+									<div class="list-group">
+										<a class="list-group-item" href="#" id="allinboxmessages" th:attr="data-url=@{'/message/getMessages'(enumMessage=${'MESSAGE'},type=${'TO'},pageNo=${'0'})},data-frgid=${'messages'}">
+											<i class="fa fa-inbox"></i><span>Messages</span>
+											<span class="badge" id="messagescount" th:text="${totalinboxMessages}">InboxCount</span>
+										</a>
+										<a class="list-group-item" href="#" id="allsent" th:attr="data-url=@{'/message/getMessages'(enumMessage=${'MESSAGE'},type=${'FROM'},status=${'NEW'},pageNo=${'0'})},data-frgid=${'messages'}">
+											<i class="fa fa-external-link"></i><span>Sent</span>
+											<span class="badge" id="sentcount" th:text="${totalsentMessages}">SentCount</span>
+										</a>
+									</div>
+								</div>
+								<div class="col-md-9" style="padding-left: 0px">
+									<div class="panel panel-default">
+										<div class="panel-body">
+											<div class="row">
+												<div class="col-md-2">
+													<a class="btn btn-default btn-sm" href="#" id="composeMessage" th:attr="data-url=@{'/message/composeMessage'},data-frgid=${'null'}"><i class="fa fa-edit"></i>&nbsp;<span th:text="#{new.LABEL}">New</span></a>
+												</div>
+												<div class="col-md-offset-7 col-md-3">
+													<div class="dropdown">
+														<button class="btn btn-primary btn-sm" type="button" id="options" data-toggle="dropdown" aria-expanded="true">
+															<i class="fa fa-cogs"></i>&nbsp;<span th:text="#{options.LABEL}">Options</span>
+															<span class="caret"></span>
+														</button>
+														<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+															<li role="presentation">
+																<a id="markallasRead" role="menuitem" tabindex="-1" href="#">MarkAllAsRead</a></li>
+															<li role="presentation"><a id="markallasunread" tabindex="-1" href="#">MarkAllAsUnRead</a>
+															</li>
+															<li role="presentation"><a id="deleteallinbox" tabindex="-1" href="#">DeleteAllInbox</a>
+															</li>
+														</ul>
+													</div>
+												</div>
+											</div>
+											<hr style="margin-top: 0px;margin-bottom: 0px"/>
+											<span id="messages" th:attr="data-url=@{'/message/inbox'(enumMessage=${'MESSAGE'},type=${'TO'},pageNo=${'0'})},data-frgid=${'messages'}"></span>
+											<div id="listofmessages">
+												<div th:replace="inbox/message::messages"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<th:block th:replace="fragments/layout::fragmentJSCommon"/>
+		<script src="../../../..//resources/js/einn/event/message.js" th:src="@{'/resources/js/einn/event/message.js?v=' + #{version}}"></script>
+		<script language="JavaScript">
+			function loadFragment( url, fragmentId, callbackFn ) {
+				$( '#listofmessages' ).empty().append( '<div class="loading" ><i class="fa fa-spinner fa-spin fa-3x"></i></div>' ).einnLoadFragment( {
+					url: url, fragmentId: fragmentId, fragmentToInsert: fragmentId,
+					successCallback: function ( r ) {
+						if ( callbackFn ) {
+							callbackFn();
+						}
+					}
+				} );
+			}
+			//JQuery
+			$( document ).ready( function () {
+				initClickListener();
+				//ajax
+				initPaginationListeners( $( 'a.messages-pagination' ));
+				initClickListener();
+			});
+			function initPaginationListeners( $ele ) {
+				$ele.click( function ( e ) {
+					var $this = $( this );
+					e.preventDefault();
+					//ajax
+					loadFragment( $this.data( 'url' ), $this.data( 'frgid' ), function () {
+						initPaginationListeners( $( 'a.messages-pagination' ) );
+						initClickListener();
+					} );
+				} );
+			}
+			$( '#allinboxmessages' ).click( function ( e ) {
+				var $this = $( this );
+				e.preventDefault();
+				//ajax
+				loadFragment( $this.data( 'url' ), $this.data( 'frgid' ), function () {
+					initPaginationListeners( $( 'a.messages-pagination' ) );
+					initClickListener();
+				} );
+			} );
+			$( '#allsent' ).click( function ( e ) {
+				var $this = $( this );
+				e.preventDefault();
+				//ajax
+				loadFragment( $this.data( 'url' ), $this.data( 'frgid' ), function () {
+					initPaginationListeners( $( 'a.messages-pagination' ) );
+					initClickListener();
+				} );
+			} );
+			$('#composeMessage').click(function(e){
+				e.preventDefault();
+				var $this=$(this);
+				//ajax
+				loadFragment( $this.data( 'url' ), $this.data( 'frgid' ), function () {
+				} );
+			});
+			function initClickListener() {
+				//ajax
+				$( 'a.list-group-item' ).click( function ( e ) {
+					e.preventDefault();
+					var $this = $( this );
+					loadFragment( $this.data( 'url' ), $this.data( 'frgid' ), function () {
+						initTrachlistener();
+					} );
+
+				} );
+			}
+			function initTrachlistener() {
+				$( 'a.trash' ).click( function ( e ) {
+					e.preventDefault();
+					var $this = $( this );
+					var status = false;
+					//ajax
+					$.ajax( { url: $this.data( 'url' ), type: 'POST',
+						success: function ( data ) {
+							if (  data.status === 'OK' ) {
+								status=true;
+								if($this.data('countupdateonrel')==='TO')
+								{
+									var count = $( "span[id='messagescount']" );
+									count.text( data.data );
+								}
+								else if($this.data('countupdateonrel')==='FROM')
+								{
+									var count = $( "span[id='sentcount']" );
+									count.text( data.data );
+								}
+							}
+							if(status==true)
+							{
+								 var $msgtoload=$this.data('countupdateonrel')==='TO' ? $( '#allinboxmessages' ) : $( '#allsent' );
+								//ajax
+								loadFragment( $msgtoload.data( 'url' ), $msgtoload.data( 'frgid' ), function () {
+									initPaginationListeners( $( 'a.messages-pagination' ) );
+									initClickListener();
+								} );
+							}
+						}
+					} );
+
+				} );
+			}
+		</script>
+	</body>
+</html>

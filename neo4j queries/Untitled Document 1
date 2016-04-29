@@ -1,0 +1,48 @@
+#----------------------------------------------------
+#CDMessage Repository named queries
+#----------------------------------------------------
+
+# new apis
+
+CDMessage.getAllInboxMessages=MATCH (toUser:User{objectUUID:{userUUID}})<-[toRel:MESSAGE_RELATION{messageType:'MESSAGE',messageRelationType:'TO'}]-(message:Message) \
+		 WHERE (toRel.status='READ' OR toRel.status='NEW')\
+		 WITH message ,toRel as rel \
+		 MATCH (fromUser)<-[:MESSAGE_RELATION{messageType:'MESSAGE',messageRelationType:'FROM'}]-(message) \
+		 RETURN message,rel as relation,fromUser.objectUUID AS userUUID, fromUser.email AS email, fromUser.firstName AS firstName, fromUser.lastName AS lastName, fromUser.profile AS profile ORDER BY message.creationDate DESC
+
+CDMessage.getCountOfAllInboxMessages=MATCH (toUser:User{objectUUID:{userUUID}})<-[toRel:MESSAGE_RELATION{messageType:'MESSAGE',messageRelationType:'TO'}]-(message:Message) \
+		 WHERE (toRel.status='READ' OR toRel.status='NEW')\
+		 RETURN COUNT(toRel)
+
+CDMessage.getAllInboxNotifications=MATCH (toUser:User{objectUUID:{userUUID}})<-[toRel:MESSAGE_RELATION{messageType:'NOTIFICATION',messageRelationType:'TO'}]-(message:Message) \
+		 WHERE (toRel.status='READ' OR toRel.status='NEW')\
+		 RETURN message,toRel as relation ORDER BY message.creationDate DESC
+
+CDMessage.getCountOfAllInboxNotifications=MATCH (toUser:User{objectUUID:{userUUID}})<-[toRel:MESSAGE_RELATION{messageType:'NOTIFICATION',messageRelationType:'TO'}]-(message:Message) \
+		 WHERE (toRel.status='READ' OR toRel.status='NEW')\
+		 RETURN COUNT(message)
+
+CDMessage.getCountOfAllInboxUnreadNotifications=MATCH (toUser:User{objectUUID:{userUUID}})<-[toRel:MESSAGE_RELATION{messageType:'NOTIFICATION',messageRelationType:'TO'}]-(message:Message) \
+		 WHERE ( toRel.status='NEW')\
+		 RETURN COUNT(message)
+
+CDMessage.getNewMessagesCount=MATCH (user:User{objectUUID:{userUUID}})<-[:MESSAGE_RELATION{messageType:'MESSAGE',messageRelationType:'TO',status:'NEW'}]-(message:Message) \
+    	 RETURN COUNT(message)
+
+CDMessage.getAllSentMessages=MATCH (fromUser:User{objectUUID:{userUUID}})<-[toRel:MESSAGE_RELATION{messageType:'MESSAGE',messageRelationType:'FROM'}]-(message:Message) \
+         WHERE ( toRel.status='NEW')\
+	      RETURN message,toRel as relation,fromUser.objectUUID AS userUUID, fromUser.email AS email, fromUser.firstName AS firstName, fromUser.lastName AS lastName, fromUser.profile AS profile ORDER BY message.creationDate DESC
+
+CDMessage.getMessageReceivers=MATCH(user:User)<-[rel:MESSAGE_RELATION{messageType:'MESSAGE',messageRelationType:'TO'}]-(message:Message{objectUUID:{messageUUID}})\
+                                       RETURN user
+
+CDMessage.getCountOfAllSentMessages=MATCH(user:User{objectUUID:{userUUID}})<-[rel:MESSAGE_RELATION{messageType:'MESSAGE',status:'NEW',messageRelationType:'FROM'}]-(message:Message)\
+   		 RETURN count(rel)
+
+CDMessage.getAllUnreadMessages=MATCH (toUser:User{objectUUID:{userUUID}})<-[toRel:MESSAGE_RELATION{messageType:'MESSAGE',messageRelationType:'TO'}]-(message:Message) \
+		  WHERE (toRel.status='NEW')\
+		  WITH message ,toRel as rel \
+		  MATCH (fromUser)<-[:MESSAGE_RELATION{messageType:'MESSAGE',messageRelationType:'FROM'}]-(message) \
+		  RETURN message,rel as relation,fromUser.objectUUID AS userUUID, fromUser.email AS email, fromUser.firstName AS firstName, fromUser.lastName AS lastName, fromUser.profile AS profile ORDER BY message.creationDate DESC
+
+

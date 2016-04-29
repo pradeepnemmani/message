@@ -1,0 +1,24 @@
+// Enum for Message status
+	public enum EnumMessageStatus
+	{
+		NEW, READ, ARCHIVED,TRASH
+	}
+
+	// Enum for Message Type like Inbox, Email, ....
+	public enum EnumMessageType
+	{
+		INBOX, EMAIL, SMS, USER_WALL, EVENT_SUGGESTION_BOX, EVENT_IDEA_BOX
+	}
+
+	//Enum for a  message Relation type
+	public enum EnumMessageRelationType
+	{
+		FROM, TO, MESSAGE_THREAD
+	}
+
+	public enum EnumMessage
+	{
+		MESSAGE, NOTIFICATION
+	}
+
+

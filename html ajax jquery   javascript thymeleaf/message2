@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head th:fragment="fragmentRegisterPageHead">
+		<th:block th:replace="fragments/layout::fragmentMetaCommon"></th:block>
+		<th:block th:replace="fragments/layout::fragmentCSSCommon"></th:block>
+		<th:block th:replace="fragments/layout::fragmentCSSEInnCommon"></th:block>
+		<th:block th:replace="fragments/layout::gaHead"/>
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+		<!--<link href="test3.css" rel="stylesheet"/>-->
+		<link href="/resources/css/test/test3.css" rel="stylesheet"/>
+		<style>
+
+		</style>
+	</head>
+	<body>
+		<div id="message">
+			<div class="article">
+				<div class="header">
+					<div class="pull-left userLogo">
+						<img th:src="@{${photo}}" style="width: 50px" th:unless="${#strings.isEmpty(photo)}"/>
+						<img th:src="@{'/resources/img/user/user.png'}" style="width: 50px" th:if="${#strings.isEmpty(photo)}"/>
+					</div>
+					<div>
+						<span th:text="${displayName}">User Name</span><br/>
+					</div>
+					<hr style="margin-bottom: 0px"/>
+				</div>
+				<div>
+					<h5> <span th:text="${subject}"></span></h5>
+					<!--<p><span th:text="${body}"></span></p>-->
+					<p><span>Thymeleaf is a Java library. It is an XML/XHTML/HTML5 template engine able to apply a set of transformations to template files in order to display data and/or text produced by your applications.
+It is better suited for serving XHTML/HTML5 in web applications, but it can process any XML file, be it in web or in standalone applications.
+The main goal of Thymeleaf is to provide an elegant and well-formed way of creating templates. In order to achieve this, it is based on XML tags and attributes that define the execution of predefined logic on the DOM (Document Object Model), instead of explicitly writing that logic as code inside the template.
+Its architecture allows a fast processing of templates, relying on intelligent caching of parsed files in order to use the least possible amount of I/O operations during execution.
+And last but not least, Thymeleaf has been designed from the beginning with XML and Web standards in mind, allowing you to create fully validating templates if that is a need for you.</span></p>
+				</div>
+				<div class="pull-right">
+					<small>
+						<a class="trash"  href="#" th:attr="data-url=@{'/message/markMessageAs'(messageType=${messageType},type=${relationType},list=${messageUUID},statusToSet=${'ARCHIVED'},isUpdate=${'true'})},data-countupdateonrel=${relationType}">
+							<i class="fa fa-trash-o"></i>
+						</a>
+					</small>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

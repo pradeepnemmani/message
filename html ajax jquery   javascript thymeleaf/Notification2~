@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head th:fragment="fragmentRegisterPageHead">
+		<th:block th:replace="fragments/layout::fragmentMetaCommon"></th:block>
+		<th:block th:replace="fragments/layout::fragmentCSSCommon"></th:block>
+		<th:block th:replace="fragments/layout::fragmentCSSEInnCommon"></th:block>
+		<th:block th:replace="fragments/layout::gaHead"/>
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+		<!--<link href="test3.css" rel="stylesheet"/>-->
+		<link href="/resources/css/test/test3.css" rel="stylesheet"/>
+		<style>
+
+		</style>
+	</head>
+	<body>
+
+		<div class="col-md-2">
+			<ul class="messagebox" role="menu" aria-labelledby="dLabel" th:id="topnotifications" th:fragment="topnotifications">
+				<!--/*/ <th:block th:unless="${#lists.isEmpty(notificationMap)}"> /*/-->
+				<li id="top-notif-header" class="messagebox-header">
+					<span  id="notifCount"  th:text="#{notificationsCount.MESSAGE(${totalUnreadNotifCount})}">You have 2 messages</span></li>
+				<ul class="messages-wrapper list-unstyled" >
+
+					<li th:each="notifMap,iter : ${notificationMap}">
+						<a class="line-item"  href="#"  th:if="*{#strings.toString(notifMap.relation.status) eq 'NEW'}" style="background: #b8b8b8">
+							<div class="pull-left notification-icon">
+								<i class="fa fa-ticket"></i>
+							</div>
+							<p class="notification"><span th:utext="${notifMap.message.body}">Hello</span></p>
+						</a>
+						<a class="line-item"  href="#"  th:if="*{#strings.toString(notifMap.relation.status) eq 'READ'}">
+							<div class="pull-left notification-icon">
+								<i class="fa fa-ticket"></i>
+							</div>
+							<p class="notification"><span th:utext="${notifMap.message.body}">Hello</span></p>
+						</a>
+					</li>
+				</ul>
+				<!--/*/ </th:block> /*/-->
+				<li id="top-notif-header" class="messagebox-footer" th:if="${#lists.isEmpty(notificationMap)}">
+					<span th:text="#{noNotifications.MESSAGE}">no notifications</span>
+				</li>
+			</ul>
+		</div>
+
+
+		<div class="col-md-2">
+			<ul class="messagebox" role="menu" aria-labelledby="dLabel" th:id="topmessages" th:fragment="topmessages">
+				<li id="top-msg-header" class="messagebox-header">
+					<span th:text="#{inboxMessagesCount.MESSAGE(${allMsgCount})}">You have 2 messages</span></li>
+				<ul class="messages-wrapper list-unstyled">
+
+					<li class="message" th:each="msgMap,iter : ${messageMap}">
+						<a class="line-item" href="#" th:if="*{#strings.toString(msgMap.relation.status) eq 'NEW'}" style="background: #b8b8b8">
+							<div class="pull-left userLogo" th:with="photoUrl =${msgMap.profile ne null? msgMap.photoUrl: ''}">
+								<img th:src="@{${photoUrl}}" th:unless="${#strings.isEmpty(photoUrl)}"/>
+								<img th:src="@{'/resources/img/user/user.png'}" th:if="${#strings.isEmpty(photoUrl)}"/>
+							</div>
+							<h4>
+								<span th:text="${msgMap.displayName}">User Name</span>
+								<span class="pull-right"><small>
+									<i class="fa fa-clock-o"><span th:text="${#calendars.format(msgMap.message.creationDate,'dd MMMM yyyy')}">date</span></i>
+								</small></span>
+							</h4>
+							<p><span th:utext="${msgMap.message.body}"></span></p>
+						</a>
+						<a class="line-item" href="#" th:if="*{#strings.toString(msgMap.relation.status) eq 'READ'}">
+							<div class="pull-left userLogo" th:with="photoUrl =${msgMap.profile ne null? msgMap.photoUrl: ''}">
+								<img th:src="@{${photoUrl}}" th:unless="${#strings.isEmpty(photoUrl)}"/>
+								<img th:src="@{'/resources/img/user/user.png'}" th:if="${#strings.isEmpty(photoUrl)}"/>
+							</div>
+							<h4>
+								<span th:text="${msgMap.displayName}">User Name</span>
+								<span class="pull-right"><small>
+									<i class="fa fa-clock-o"><span th:text="${#calendars.format(msgMap.message.creationDate,'dd MMMM yyyy')}">date</span></i>
+								</small></span>
+							</h4>
+							<p><span th:utext="${msgMap.message.body}"></span></p>
+						</a>
+					</li>
+				</ul>
+				<li id="top-msg-header" class="messagebox-footer" th:if="${#lists.isEmpty(messageMap)}">
+					<span th:text="#{noInboxMessages.MESSAGE}">No messages</span>
+				</li>
+				<hr style="margin-bottom: 0px;margin-top: 0px"/>
+				<li class="messagebox-footer"><a href="/message/inbox" th:attr="data-url=@{'/message/inbox'(enumMessage=${'MESSAGE'},type=${'TO'},pageNo=${'0'})}">
+					<span th:text="#{seeAllInboxMessages.MESSAGE}">See All messages</span>
+					<i class="fa fa-arrow-right"></i>
+				</a></li>
+			</ul>
+		</div>
+		<script src="../../../../resources/js/einn/utils.js" th:src="@{'/resources/js/einn/utils.js?v=' + #{version}}" th:fragment="fragmentJSEInnUtils"></script>
+		<script src="../../../../resources/js/einn/fragments.js" th:src="@{'/resources/js/einn/fragments.js?v=' + #{version}}" th:fragment="fragmentJSEInnFragments"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+		<script src="../../../../resources/js/einn/event/message.js" th:src="@{'/resources/js/einn/event/message.js?v=' + #{version}}" th:fragment="fragmentJSEInnUtils"></script>
+	</body>
+</html>
+

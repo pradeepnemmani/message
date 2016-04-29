@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head th:fragment="fragmentRegisterPageHead">
+		<th:block th:replace="fragments/layout::fragmentMetaCommon"></th:block>
+		<th:block th:replace="fragments/layout::fragmentCSSCommon"></th:block>
+		<th:block th:replace="fragments/layout::fragmentCSSEInnCommon"></th:block>
+		<th:block th:replace="fragments/layout::gaHead"/>
+		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+		<!--<link href="test3.css" rel="stylesheet"/>-->
+		<link href="/resources/css/test/test3.css" rel="stylesheet"/>
+		<style>
+		</style>
+	</head>
+	<body>
+		<div class="panel-header" role="menu" aria-labelledby="dLabel" th:id="messages" th:fragment="messages">
+			<div class="list-group">
+				<div class="message" th:each="msgMap,iter : ${messageMap}">
+					<div>
+						<a class="list-group-item" href="#"  th:with="photoUrl =${msgMap.profile ne null? msgMap.photoUrl: ''}" th:attr="data-url=@{'/message/openInboxMessage'(messageType=${msgMap.relation.messageType},relationType=${msgMap.relation.messageRelationType},relationStatus=${msgMap.relation.status},messageUUID=${msgMap.message.objectUUID},photo=${photoUrl},displayName=${msgMap.displayName},subject=${msgMap.message.subject},body=${msgMap.message.body})},data-messageUUID=${msgMap.message.objectUUID},data-frgid=${'message'}">
+							<div class="pull-left userLogo">
+								<img th:src="@{${photoUrl}}" style="width: 50px" th:unless="${#strings.isEmpty(photoUrl)}"/>
+								<img th:src="@{'/resources/img/user/user.png'}" style="width: 50px" th:if="${#strings.isEmpty(photoUrl)}"/>
+							</div>
+							<div>
+								<div style="margin-top: 0px;margin-bottom: 2px">
+									<span  th:text="${msgMap.displayName}">User Name</span>
+									<span class="pull-right">
+										<small>
+											<i class="fa fa-clock-o"><span th:text="${#calendars.format(msgMap.message.creationDate,'dd MMMM yyyy')}">date</span></i>
+										</small>
+									</span>
+								</div>
+								<div th:if="*{#strings.toString(msgMap.relation.messageRelationType) eq 'TO'}">
+									<p><span th:if="*{#strings.toString(msgMap.relation.status) eq 'NEW'}" th:utext="${msgMap.message.subject}" style="color: cornflowerblue"></span></p>
+									<p><span th:if="*{#strings.toString(msgMap.relation.status) ne 'NEW'}" th:utext="${msgMap.message.subject}"></span></p>
+								</div>
+								<div>
+									<p><span  th:utext="${msgMap.message.body}"></span></p>
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+				<div th:if="${#lists.isEmpty(messageMap)}">
+					<span style="text-align: center">No Messages</span>
+				</div>
+			</div>
+			<div class="panel-footer" th:if="${totalPages} > 0">
+				<div class="pull-left">
+					<p><span th:text="${totalMessages}">100</span> TotalMessage</p>
+				</div>
+				<div class="pull-right">
+					<div>
+						<p>Page <span th:text="${pn + 1}">1</span> of <span th:text="${totalPages}"></span>
+						</p>
+					</div>
+					<span>
+						<a class="messages-pagination" href="#" th:attr="data-url=@{${mappingUrl}(enumMessage=${messageType},type=${relationType},status=${status},pageNo=${pn-1})},data-frgid=${'messages'}">
+							<i class="ace-icon fa fa-step-backward middle"></i>
+						</a>
+					</span>
+					<span>
+						<input type="text" maxlength="3" th:value="${pn+1}" style="width: 34px;height: 24px;text-align: center"/>
+					</span>
+					<span>
+						<a class="messages-pagination" href="#" th:attr="data-url=@{${mappingUrl}(enumMessage=${messageType},type=${relationType},status=${status},pageNo=${pn+1})},data-frgid=${'messages'}">
+							<i class="ace-icon fa fa-step-forward middle"></i>
+						</a>
+					</span>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

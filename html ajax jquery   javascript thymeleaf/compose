@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+		<title></title>
+	</head>
+	<body>
+		<div id="compose">
+			<form action="/message/sendMessage" method="post">
+				<label for="to">TO</label>
+				<input type="text" id="to" name="to" />
+				<hr/>
+				<label for="subject">Subject</label>
+				<input type="text" id="subject" name="subject" />
+				<br/>
+				<label for="body">Body</label>
+				<textarea  rows="10" cols="50" id="body" name="body">
+				</textarea>
+				<input type="submit" id="submit" name="SUBMIT"/>
+				<input type="reset" id="reset" name="RESET"/>
+			</form>
+		</div>
+	</body>
+</html>
